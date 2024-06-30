@@ -1,178 +1,222 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>腓利門給揪嗎</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f0e4d7;
-            color: #333;
-            margin: 0;
-            padding: 0;
-        }
-        .calendar-container {
-            max-width: 100%;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #fff;
-            border: 1px solid #ccc;
-            border-radius: 10px;
-            box-sizing: border-box;
-        }
-        .calendar-header {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .calendar-header h1 {
-            margin: 0;
-            font-size: 24px;
-            color: #8b4513;
-        }
-        .calendar-nav {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-bottom: 20px;
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>腓利門給揪嗎</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f0e4d7;
+        color: #333;
+        margin: 0;
+        padding: 0;
+    }
+    .calendar-container {
+        max-width: 100%;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #fff;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        box-sizing: border-box;
+    }
+    .calendar-header {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    .calendar-header h1 {
+        margin: 0;
+        font-size: 24px;
+        color: #8b4513;
+    }
+    .calendar-nav {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+    .calendar-nav select {
+        padding: 10px;
+        font-size: 16px;
+        cursor: pointer;
+        border: none;
+        border-radius: 5px;
+        background-color: #8b4513;
+        color: #fff;
+        margin: 0 10px;
+    }
+    .calendar-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+        table-layout: fixed;
+    }
+    .calendar-table th, .calendar-table td {
+        border: 1px solid #ccc;
+        padding: 5px;
+        text-align: center;
+        word-wrap: break-word;
+    }
+    .calendar-table th {
+        background-color: #eee;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+    .calendar-table td {
+        height: 60px;
+        position: relative;
+    }
+    .calendar-table .weekend {
+        background-color: #f2e6d9;
+    }
+    .calendar-table .holiday {
+        background-color: #f2e6d9;
+    }
+    .calendar-table td[data-event] {
+        position: relative;
+    }
+    .calendar-table td[data-event]:hover .note {
+        display: block;
+    }
+    .note {
+        display: none;
+        position: absolute;
+        bottom: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: #fff;
+        border: 1px solid #ccc;
+        padding: 5px;
+        white-space: nowrap;
+        z-index: 10;
+    }
+    .delete-mode .calendar-table td[data-event] {
+        cursor: pointer;
+    }
+    .delete-mode .calendar-table td[data-event]:hover {
+        background-color: red;
+    }
+    .today {
+        background-color: #ffeb3b;
+    }
+    .leave {
+        color: red;
+        font-weight: bold;
+    }
+    .stats {
+        margin-bottom: 20px;
+    }
+    .stats h2 {
+        font-size: 20px;
+        color: #8b4513;
+    }
+    .stats p {
+        font-size: 16px;
+    }
+    .event-input {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+    .event-input div {
+        margin-bottom: 10px;
+    }
+    .event-input label {
+        font-weight: bold;
+        margin-right: 10px;
+    }
+    .event-input textarea {
+        width: 100%;
+        height: 100px;
+        padding: 5px;
+        font-size: 16px;
+        margin-right: 10px;
+        box-sizing: border-box;
+    }
+    .actions {
+        display: flex;
+        justify-content: flex-end;
+    }
+    .actions button {
+        padding: 10px 20px;
+        font-size: 16px;
+        margin-left: 10px;
+        cursor: pointer;
+        border: none;
+        border-radius: 5px;
+        background-color: #d2b48c;
+        color: #fff;
+    }
+    .actions button.active {
+        background-color: #8b4513;
+    }
+    .actions button:hover {
+        background-color: #a0522d;
+    }
+    .report {
+        margin-bottom: 20px;
+    }
+    .report h2 {
+        font-size: 20px;
+        color: #8b4513;
+    }
+    .report p {
+        font-size: 16px;
+    }
+    .holiday-input {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 20px;
+    }
+    .holiday-input div {
+        margin-bottom: 10px;
+    }
+    .holiday-input label {
+        font-weight: bold;
+        margin-right: 10px;
+    }
+    .holiday-input input {
+        padding: 5px;
+        font-size: 16px;
+        margin-right: 10px;
+        box-sizing: border-box;
+    }
+    @media (max-width: 600px) {
+        .calendar-table th, .calendar-table td {
+            padding: 2px;
         }
         .calendar-nav select {
-            padding: 10px;
-            font-size: 16px;
-            cursor: pointer;
-            border: none;
-            border-radius: 5px;
-            background-color: #8b4513;
-            color: #fff;
-            margin: 0 10px;
-        }
-        .calendar-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-            table-layout: fixed;
-        }
-        .calendar-table th, .calendar-table td {
-            border: 1px solid #ccc;
             padding: 5px;
-            text-align: center;
-            word-wrap: break-word;
-        }
-        .calendar-table th {
-            background-color: #eee;
-            position: sticky;
-            top: 0;
-            z-index: 1;
-        }
-        .calendar-table td {
-            height: 60px;
-            position: relative;
-        }
-        .calendar-table .weekend {
-            background-color: #f2e6d9;
-        }
-        .calendar-table td[data-event] {
-            position: relative;
-        }
-        .calendar-table td[data-event]:hover .note {
-            display: block;
-        }
-        .note {
-            display: none;
-            position: absolute;
-            bottom: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: #fff;
-            border: 1px solid #ccc;
-            padding: 5px;
-            white-space: nowrap;
-            z-index: 10;
-        }
-        .delete-mode .calendar-table td[data-event] {
-            cursor: pointer;
-        }
-        .delete-mode .calendar-table td[data-event]:hover {
-            background-color: red;
-        }
-        .leave {
-            color: red;
-            font-weight: bold;
-        }
-        .stats {
-            margin-bottom: 20px;
-        }
-        .stats h2 {
-            font-size: 20px;
-            color: #8b4513;
-        }
-        .stats p {
-            font-size: 16px;
-        }
-        .event-input {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-        .event-input div {
-            margin-bottom: 10px;
-        }
-        .event-input label {
-            font-weight: bold;
-            margin-right: 10px;
+            font-size: 14px;
         }
         .event-input textarea {
-            width: 100%;
-            height: 100px;
-            padding: 5px;
-            font-size: 16px;
-            margin-right: 10px;
-            box-sizing: border-box;
+            height: 80px;
         }
-        .actions {
-            display: flex;
-            justify-content: flex-end;
-        }
-        .actions button {
-            padding: 10px 20px;
-            font-size: 16px;
-            margin-left: 10px;
-            cursor: pointer;
-            border: none;
-            border-radius: 5px;
-            background-color: #d2b48c;
-            color: #fff;
-        }
-        .actions button.active {
-            background-color: #8b4513;
-        }
-        .actions button:hover {
-            background-color: #a0522d;
-        }
-        @media (max-width: 600px) {
-            .calendar-table th, .calendar-table td {
-                padding: 2px;
-            }
-            .calendar-nav select {
-                padding: 5px;
-                font-size: 14px;
-            }
-            .event-input textarea {
-                height: 80px;
-            }
-        }
-    </style>
+    }
+</style>
 </head>
 <body>
 <div class="calendar-container">
     <div class="calendar-header">
-        <h1 id="calendar-title">腓利門給揪嗎</h1>
+        <h1 id="calendar-title">2025年腓利門給揪嗎</h1>
     </div>
     <div class="calendar-nav">
-        <select id="month-select" onchange="changeMonth()">
-            <!-- Options will be populated by JavaScript -->
+        <select id="year-select" onchange="changeYear()">
+            <!-- Year options will be populated by JavaScript -->
         </select>
+        <select id="month-select" onchange="changeMonth()">
+            <!-- Month options will be populated by JavaScript -->
+        </select>
+    </div>
+    <div class="report">
+        <h2>近三日匯報彙整</h2>
+        <div id="report-content">
+            <!-- Recent 3-day report will be generated here -->
+        </div>
     </div>
     <table class="calendar-table">
         <thead>
@@ -200,15 +244,27 @@
     <div class="event-input">
         <div>
             <label for="event-textarea">輸入行程：</label>
-            <textarea id="event-textarea" placeholder="例如：總會活動,6/10-6/14,學生靈恩會&#10;畀予,6/25-6/26,嘉義書展,隔天請整天"></textarea>
+            <textarea id="event-textarea" placeholder="例如：總會活動.6/10-6/14.學生靈恩會&#10;畀予.6/25-6/26.嘉義書展.隔天請整天"></textarea>
         </div>
         <button onclick="addEvents()">確認</button>
-        <button onclick="clearCalendar()">刪除所有設定</button>
+        <button onclick="clearCurrentYearEvents()">刪除所有設定</button>
     </div>
     <div class="actions">
         <button onclick="toggleDeleteMode()" id="delete-mode-btn">刪除模式</button>
-        <button onclick="saveCalendar()">保存</button>
         <button onclick="exportCSV()">導出CSV</button>
+    </div>
+    <div class="holiday-input">
+        <h2>變更當年度假期</h2>
+        <div>
+            <label for="holiday-date">日期 (年/月/日):</label>
+            <input type="text" id="holiday-date" placeholder="例如: 2024/2/10">
+        </div>
+        <div>
+            <label for="holiday-name">假期名稱:</label>
+            <input type="text" id="holiday-name" placeholder="例如: 節日名稱">
+        </div>
+        <button onclick="addHoliday()">新增假期</button>
+        <button onclick="removeHoliday()">刪除假期</button>
     </div>
 </div>
 
@@ -217,30 +273,62 @@
     let currentYear = new Date().getFullYear();
     let eventsData = [];
     let deleteMode = false;
+    let lastEvent = null;
+    let lastEventTime = null;
+
+    let holidays = {
+        '2024/1/1': '元旦',
+        '2024/1/6': '雅慧生日',
+        '2024/1/7': '畀予生日',
+        '2024/2/28': '和平紀念日',
+        '2024/5/1': '勞動節',
+        '2024/9/6': '榮源生日',
+        '2024/9/11': '凱琪生日',
+        '2024/10/10': '雙十節',
+    };
 
     document.addEventListener('DOMContentLoaded', function() {
+        populateYearSelect();
         populateMonthSelect();
-        document.getElementById('calendar-title').innerText = `${currentYear}年${currentMonth + 1}月安排表`;
+        document.getElementById('calendar-title').innerText = `${currentYear}年腓利門給揪嗎`;
         loadEvents();
         generateCalendar(currentYear, currentMonth);
         renderEvents();
         updateStats();
+        generateRecentReport();
     });
+
+    function populateYearSelect() {
+        const yearSelect = document.getElementById('year-select');
+        yearSelect.innerHTML = '';
+        for (let i = currentYear; i <= currentYear + 3; i++) {
+            const option = document.createElement('option');
+            option.value = i;
+            option.innerText = `${i}年`;
+            if (i === currentYear) {
+                option.selected = true;
+            }
+            yearSelect.appendChild(option);
+        }
+    }
+
+    function changeYear() {
+        currentYear = parseInt(document.getElementById('year-select').value, 10);
+        document.getElementById('calendar-title').innerText = `${currentYear}年腓利門給揪嗎`;
+        generateCalendar(currentYear, currentMonth);
+        renderEvents();
+        updateStats();
+        generateRecentReport();
+    }
 
     function populateMonthSelect() {
         const monthSelect = document.getElementById('month-select');
         monthSelect.innerHTML = '';
-
-        const startMonth = currentMonth - 3 < 0 ? 12 + (currentMonth - 3) : currentMonth - 3;
-        const startYear = currentMonth - 3 < 0 ? currentYear - 1 : currentYear;
-
-        for (let i = 0; i <= 9; i++) {
-            const month = (startMonth + i) % 12;
-            const year = startYear + Math.floor((startMonth + i) / 12);
+        for (let i = 0; i < 12; i++) {
             const option = document.createElement('option');
-            option.value = `${year}-${month}`;
-            option.innerText = `${year}年${month + 1}月`;
-            if (month === currentMonth && year === currentYear) {
+            option.value = i;
+            option.innerText = `${i + 1}月`;
+            if (i === currentMonth) {
                 option.selected = true;
             }
             monthSelect.appendChild(option);
@@ -248,13 +336,12 @@
     }
 
     function changeMonth() {
-        const [year, month] = document.getElementById('month-select').value.split('-').map(Number);
-        currentYear = year;
-        currentMonth = month;
-        document.getElementById('calendar-title').innerText = `${currentYear}年${currentMonth + 1}月安排表`;
+        currentMonth = parseInt(document.getElementById('month-select').value, 10);
+        document.getElementById('calendar-title').innerText = `${currentYear}年腓利門給揪嗎`;
         generateCalendar(currentYear, currentMonth);
         renderEvents();
         updateStats();
+        generateRecentReport();
     }
 
     function generateCalendar(year, month) {
@@ -262,6 +349,7 @@
         calendarBody.innerHTML = '';
         const daysInMonth = new Date(year, month + 1, 0).getDate();
         const startDay = new Date(year, month, 1).getDay();
+        const today = new Date();
 
         const weekdays = ['日', '一', '二', '三', '四', '五', '六'];
 
@@ -273,6 +361,17 @@
             weekdayCell.innerText = weekdays[(startDay + day - 1) % 7];
             if ((startDay + day - 1) % 7 === 0 || (startDay + day - 1) % 7 === 6) {
                 row.classList.add('weekend');
+            }
+
+            const dateStr = `${year}/${month + 1}/${day}`;
+            if (holidays[dateStr]) {
+                row.classList.add('holiday');
+                dateCell.innerText += ` (${holidays[dateStr]})`;
+            }
+
+            if (year === today.getFullYear() && month === today.getMonth() && day === today.getDate()) {
+                dateCell.innerHTML += ' ★';
+                row.classList.add('today');
             }
             row.appendChild(dateCell);
             row.appendChild(weekdayCell);
@@ -294,7 +393,17 @@
             return;
         }
 
-        const events = eventText.split('\n').map(line => line.split(','));
+        const now = new Date();
+        if (lastEvent && eventText === lastEvent && (now - lastEventTime) < 10000) {
+            if (!confirm('重複的行程在十秒內被輸入，確定要送出嗎？')) {
+                return;
+            }
+        }
+
+        lastEvent = eventText;
+        lastEventTime = now;
+
+        const events = eventText.split('\n').map(line => line.split('.'));
         for (let i = 0; i < events.length; i++) {
             const event = events[i];
             if (event.length < 3 || event.length > 4) {
@@ -308,7 +417,7 @@
             const startDateParts = startDateStr.split('/');
             const endDateParts = endDateStr ? endDateStr.split('/') : startDateParts;
 
-            if (startDateParts.length !== 2 || endDateParts.length !== 2) {
+            if (startDateParts.length !== 2 || endDateParts.length !== 2 || isNaN(parseInt(startDateParts[0], 10)) || isNaN(parseInt(startDateParts[1], 10))) {
                 alert(`第 ${i + 1} 行的日期格式錯誤，請使用 "月/日" 格式`);
                 return;
             }
@@ -316,17 +425,40 @@
             const startDate = new Date(currentYear, parseInt(startDateParts[0], 10) - 1, parseInt(startDateParts[1], 10));
             const endDate = new Date(currentYear, parseInt(endDateParts[0], 10) - 1, parseInt(endDateParts[1], 10));
 
-            if (!(startDate instanceof Date && !isNaN(startDate)) || !(endDate instanceof Date && !isNaN(endDate))) {
+            if (startDate.getMonth() !== parseInt(startDateParts[0], 10) - 1 || endDate.getMonth() !== parseInt(endDateParts[0], 10) - 1 || !(startDate instanceof Date && !isNaN(startDate)) || !(endDate instanceof Date && !isNaN(endDate))) {
                 alert(`第 ${i + 1} 行的日期格式錯誤，請重新輸入`);
                 return;
             }
 
-            eventsData.push({ type: type.trim(), startDate: startDate.toISOString(), endDate: endDate.toISOString(), content: content.trim(), note: note ? note.trim() : '' });
+            console.log('Adding event:', {
+                type: type.trim(),
+                startDate: startDate.toISOString(),
+                endDate: endDate.toISOString(),
+                content: content.trim(),
+                note: note ? note.trim() : ''
+            });
+
+            // Handle events that span across months
+            let tempDate = new Date(startDate);
+            while (tempDate <= endDate) {
+                const tempEndDate = new Date(tempDate.getFullYear(), tempDate.getMonth() + 1, 0);
+                const partialEndDate = tempEndDate > endDate ? endDate : tempEndDate;
+                eventsData.push({
+                    type: type.trim(),
+                    startDate: tempDate.toISOString(),
+                    endDate: partialEndDate.toISOString(),
+                    content: content.trim(),
+                    note: note ? note.trim() : ''
+                });
+                tempDate = new Date(tempEndDate);
+                tempDate.setDate(tempDate.getDate() + 1);
+            }
         }
 
         saveEvents();
         renderEvents();
         updateStats();
+        generateRecentReport();
     }
 
     function renderEvents() {
@@ -344,10 +476,12 @@
         eventsData.forEach(event => {
             const startDate = new Date(event.startDate);
             const endDate = new Date(event.endDate);
-            for (let day = startDate.getDate(); day <= endDate.getDate(); day++) {
-                for (let row of calendarBody) {
-                    if (parseInt(row.cells[0].innerText) === day && currentMonth === startDate.getMonth()) {
-                        for (let cell of row.cells) {
+            for (let date = new Date(startDate); date <= endDate; date.setDate(date.getDate() + 1)) {
+                if (date.getFullYear() === currentYear && date.getMonth() === currentMonth) {
+                    const rowIndex = date.getDate() - 1;
+                    const calendarRow = calendarBody[rowIndex];
+                    if (calendarRow) {
+                        for (let cell of calendarRow.cells) {
                             if (cell.getAttribute('data-person') === event.type) {
                                 const cellContent = document.createElement('div');
                                 cellContent.innerText = event.content;
@@ -379,6 +513,7 @@
                                             saveEvents();
                                             renderEvents();
                                             updateStats();
+                                            generateRecentReport();
                                         }
                                     };
                                 }
@@ -445,20 +580,20 @@
         }
         renderEvents();
         updateStats();
+        generateRecentReport();
     }
 
-    function clearCalendar() {
-        if (confirm('確定要刪除所有設定嗎？')) {
-            eventsData = [];
+    function clearCurrentYearEvents() {
+        if (confirm('確定要刪除今年度的所有設定嗎？')) {
+            eventsData = eventsData.filter(event => {
+                const startDate = new Date(event.startDate);
+                return startDate.getFullYear() !== currentYear;
+            });
             saveEvents();
             renderEvents();
             updateStats();
+            generateRecentReport();
         }
-    }
-
-    function saveCalendar() {
-        // Implementation to save calendar data
-        alert('行事曆已保存');
     }
 
     function exportCSV() {
@@ -490,6 +625,83 @@
             deleteModeBtn.classList.remove('active');
         }
         renderEvents();
+    }
+
+    function generateRecentReport() {
+        const reportContent = document.getElementById('report-content');
+        const today = new Date();
+        const reportData = {};
+
+        // Iterate over the eventsData to generate the report
+        eventsData.forEach(event => {
+            const startDate = new Date(event.startDate);
+            const endDate = new Date(event.endDate);
+
+            for (let date = new Date(startDate); date <= endDate; date.setDate(date.getDate() + 1)) {
+                const diffTime = date - today;
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+                if (diffDays >= 0 && diffDays <= 2) { // Only include events within the next 3 days
+                    const targetDateString = `${date.getMonth() + 1}/${date.getDate()}`;
+                    const key = `${targetDateString}:${event.content.includes('請假') ? '請假' : event.content}`;
+
+                    if (!reportData[key]) {
+                        reportData[key] = [];
+                    }
+
+                    if (event.type === '總會活動') {
+                        reportData[key].push(event.content);
+                    } else {
+                        reportData[key].push(event.type);
+                    }
+                }
+            }
+        });
+
+        // Sort report data by date
+        const sortedReportData = Object.entries(reportData).sort((a, b) => {
+            const dateA = new Date(a[0].split(':')[0]);
+            const dateB = new Date(b[0].split(':')[0]);
+            return dateA - dateB;
+        });
+
+        const reportOutput = sortedReportData.map(([key, values]) => `${key}: ${values.join(' ')}`).join('<br>');
+
+        console.log('Generated report data:', reportOutput);
+        reportContent.innerHTML = reportOutput.length > 0 ? reportOutput : '最近三天沒有活動';
+    }
+
+    function addHoliday() {
+        const holidayDate = document.getElementById('holiday-date').value.trim();
+        const holidayName = document.getElementById('holiday-name').value.trim();
+
+        if (!holidayDate || !holidayName) {
+            alert('請輸入完整的假期日期和名稱');
+            return;
+        }
+
+        holidays[holidayDate] = holidayName;
+        alert(`已新增或更新假期: ${holidayDate} - ${holidayName}`);
+        generateCalendar(currentYear, currentMonth);
+        renderEvents();
+    }
+
+    function removeHoliday() {
+        const holidayDate = document.getElementById('holiday-date').value.trim();
+
+        if (!holidayDate) {
+            alert('請輸入要刪除的假期日期');
+            return;
+        }
+
+        if (holidays[holidayDate] && holidayDate.startsWith(`${currentYear}/`)) {
+            delete holidays[holidayDate];
+            alert(`已刪除假期: ${holidayDate}`);
+            generateCalendar(currentYear, currentMonth);
+            renderEvents();
+        } else {
+            alert('找不到該日期的假期，或無法刪除非當年度的假期');
+        }
     }
 </script>
 </body>
