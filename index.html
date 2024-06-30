@@ -1,168 +1,168 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>腓利門給揪嗎</title>
-<style>
-    body {
-        font-family: Arial, sans-serif;
-        background-color: #f0e4d7;
-        color: #333;
-        margin: 0;
-        padding: 0;
-    }
-    .calendar-container {
-        max-width: 100%;
-        margin: 0 auto;
-        padding: 20px;
-        background-color: #fff;
-        border: 1px solid #ccc;
-        border-radius: 10px;
-        box-sizing: border-box;
-    }
-    .calendar-header {
-        text-align: center;
-        margin-bottom: 20px;
-    }
-    .calendar-header h1 {
-        margin: 0;
-        font-size: 24px;
-        color: #8b4513;
-    }
-    .calendar-nav {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin-bottom: 20px;
-    }
-    .calendar-nav select {
-        padding: 10px;
-        font-size: 16px;
-        cursor: pointer;
-        border: none;
-        border-radius: 5px;
-        background-color: #8b4513;
-        color: #fff;
-        margin: 0 10px;
-    }
-    .calendar-table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-bottom: 20px;
-        table-layout: fixed;
-    }
-    .calendar-table th, .calendar-table td {
-        border: 1px solid #ccc;
-        padding: 5px;
-        text-align: center;
-        word-wrap: break-word;
-    }
-    .calendar-table th {
-        background-color: #eee;
-        position: sticky;
-        top: 0;
-        z-index: 1;
-    }
-    .calendar-table td {
-        height: 60px;
-        position: relative;
-    }
-    .calendar-table .weekend {
-        background-color: #f2e6d9;
-    }
-    .calendar-table td[data-event] {
-        position: relative;
-    }
-    .calendar-table td[data-event]:hover .note {
-        display: block;
-    }
-    .note {
-        display: none;
-        position: absolute;
-        bottom: 100%;
-        left: 50%;
-        transform: translateX(-50%);
-        background-color: #fff;
-        border: 1px solid #ccc;
-        padding: 5px;
-        white-space: nowrap;
-        z-index: 10;
-    }
-    .delete-mode .calendar-table td[data-event] {
-        cursor: pointer;
-    }
-    .delete-mode .calendar-table td[data-event]:hover {
-        background-color: red;
-    }
-    .leave {
-        color: red;
-        font-weight: bold;
-    }
-    .stats {
-        margin-bottom: 20px;
-    }
-    .stats h2 {
-        font-size: 20px;
-        color: #8b4513;
-    }
-    .stats p {
-        font-size: 16px;
-    }
-    .event-input {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        margin-bottom: 20px;
-    }
-    .event-input div {
-        margin-bottom: 10px;
-    }
-    .event-input label {
-        font-weight: bold;
-        margin-right: 10px;
-    }
-    .event-input textarea {
-        width: 100%;
-        height: 100px;
-        padding: 5px;
-        font-size: 16px;
-        margin-right: 10px;
-        box-sizing: border-box;
-    }
-    .actions {
-        display: flex;
-        justify-content: flex-end;
-    }
-    .actions button {
-        padding: 10px 20px;
-        font-size: 16px;
-        margin-left: 10px;
-        cursor: pointer;
-        border: none;
-        border-radius: 5px;
-        background-color: #d2b48c;
-        color: #fff;
-    }
-    .actions button.active {
-        background-color: #8b4513;
-    }
-    .actions button:hover {
-        background-color: #a0522d;
-    }
-    @media (max-width: 600px) {
-        .calendar-table th, .calendar-table td {
-            padding: 2px;
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>腓利門給揪嗎</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0e4d7;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        .calendar-container {
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-sizing: border-box;
+        }
+        .calendar-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .calendar-header h1 {
+            margin: 0;
+            font-size: 24px;
+            color: #8b4513;
+        }
+        .calendar-nav {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
         }
         .calendar-nav select {
+            padding: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            background-color: #8b4513;
+            color: #fff;
+            margin: 0 10px;
+        }
+        .calendar-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            table-layout: fixed;
+        }
+        .calendar-table th, .calendar-table td {
+            border: 1px solid #ccc;
             padding: 5px;
-            font-size: 14px;
+            text-align: center;
+            word-wrap: break-word;
+        }
+        .calendar-table th {
+            background-color: #eee;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+        .calendar-table td {
+            height: 60px;
+            position: relative;
+        }
+        .calendar-table .weekend {
+            background-color: #f2e6d9;
+        }
+        .calendar-table td[data-event] {
+            position: relative;
+        }
+        .calendar-table td[data-event]:hover .note {
+            display: block;
+        }
+        .note {
+            display: none;
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #fff;
+            border: 1px solid #ccc;
+            padding: 5px;
+            white-space: nowrap;
+            z-index: 10;
+        }
+        .delete-mode .calendar-table td[data-event] {
+            cursor: pointer;
+        }
+        .delete-mode .calendar-table td[data-event]:hover {
+            background-color: red;
+        }
+        .leave {
+            color: red;
+            font-weight: bold;
+        }
+        .stats {
+            margin-bottom: 20px;
+        }
+        .stats h2 {
+            font-size: 20px;
+            color: #8b4513;
+        }
+        .stats p {
+            font-size: 16px;
+        }
+        .event-input {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .event-input div {
+            margin-bottom: 10px;
+        }
+        .event-input label {
+            font-weight: bold;
+            margin-right: 10px;
         }
         .event-input textarea {
-            height: 80px;
+            width: 100%;
+            height: 100px;
+            padding: 5px;
+            font-size: 16px;
+            margin-right: 10px;
+            box-sizing: border-box;
         }
-    }
-</style>
+        .actions {
+            display: flex;
+            justify-content: flex-end;
+        }
+        .actions button {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin-left: 10px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            background-color: #d2b48c;
+            color: #fff;
+        }
+        .actions button.active {
+            background-color: #8b4513;
+        }
+        .actions button:hover {
+            background-color: #a0522d;
+        }
+        @media (max-width: 600px) {
+            .calendar-table th, .calendar-table td {
+                padding: 2px;
+            }
+            .calendar-nav select {
+                padding: 5px;
+                font-size: 14px;
+            }
+            .event-input textarea {
+                height: 80px;
+            }
+        }
+    </style>
 </head>
 <body>
 <div class="calendar-container">
