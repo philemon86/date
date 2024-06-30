@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>腓利門給揪嗎</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f0e4d7;
+        color: #333;
+        margin: 0;
+        padding: 0;
+    }
+    .calendar-container {
+        max-width: 100%;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #fff;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        box-sizing: border-box;
+    }
+    .calendar-header {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    .calendar-header h1 {
+        margin: 0;
+        font-size: 24px;
+        color: #8b4513;
+    }
+    .calendar-nav {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+    .calendar-nav select {
+        padding: 10px;
+        font-size: 16px;
+        cursor: pointer;
+        border: none;
+        border-radius: 5px;
+        background-color: #8b4513;
+        color: #fff;
+        margin: 0 10px;
+    }
+    .calendar-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+        table-layout: fixed;
+    }
+    .calendar-table th, .calendar-table td {
+        border: 1px solid #ccc;
+        padding: 5px;
+        text-align: center;
+        word-wrap: break-word;
+    }
+    .calendar-table th {
+        background-color: #eee;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+    .calendar-table td {
+        height: 60px;
+        position: relative;
+    }
+    .calendar-table .weekend {
+        background-color: #f2e6d9;
+    }
+    .calendar-table td[data-event] {
+        position: relative;
+    }
+    .calendar-table td[data-event]:hover .note {
+        display: block;
+    }
+    .note {
+        display: none;
+        position: absolute;
+        bottom: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: #fff;
+        border: 1px solid #ccc;
+        padding: 5px;
+        white-space: nowrap;
+        z-index: 10;
+    }
+    .delete-mode .calendar-table td[data-event] {
+        cursor: pointer;
+    }
+    .delete-mode .calendar-table td[data-event]:hover {
+        background-color: red;
+    }
+    .leave {
+        color: red;
+        font-weight: bold;
+    }
+    .stats {
+        margin-bottom: 20px;
+    }
+    .stats h2 {
+        font-size: 20px;
+        color: #8b4513;
+    }
+    .stats p {
+        font-size: 16px;
+    }
+    .event-input {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+    .event-input div {
+        margin-bottom: 10px;
+    }
+    .event-input label {
+        font-weight: bold;
+        margin-right: 10px;
+    }
+    .event-input textarea {
+        width: 100%;
+        height: 100px;
+        padding: 5px;
+        font-size: 16px;
+        margin-right: 10px;
+        box-sizing: border-box;
+    }
+    .actions {
+        display: flex;
+        justify-content: flex-end;
+    }
+    .actions button {
+        padding: 10px 20px;
+        font-size: 16px;
+        margin-left: 10px;
+        cursor: pointer;
+        border: none;
+        border-radius: 5px;
+        background-color: #d2b48c;
+        color: #fff;
+    }
+    .actions button.active {
+        background-color: #8b4513;
+    }
+    .actions button:hover {
+        background-color: #a0522d;
+    }
+    @media (max-width: 600px) {
+        .calendar-table th, .calendar-table td {
+            padding: 2px;
+        }
+        .calendar-nav select {
+            padding: 5px;
+            font-size: 14px;
+        }
+        .event-input textarea {
+            height: 80px;
+        }
+    }
+</style>
+</head>
+<body>
+<div class="calendar-container">
+    <div class="calendar-header">
+        <h1 id="calendar-title">腓利門給揪嗎</h1>
+    </div>
+    <div class="calendar-nav">
+        <select id="month-select" onchange="changeMonth()">
+            <!-- Options will be populated by JavaScript -->
+        </select>
+    </div>
+    <table class="calendar-table">
+        <thead>
+            <tr>
+                <th>日期</th>
+                <th>星期</th>
+                <th>總會活動</th>
+                <th>榮源</th>
+                <th>畀予</th>
+                <th>雅慧</th>
+                <th>凱琪</th>
+            </tr>
+        </thead>
+        <tbody id="calendar-body">
+            <!-- Generate rows based on selected month -->
+        </tbody>
+    </table>
+    <div class="stats">
+        <h2>統計資訊</h2>
+        <p>榮源 - 書展天數：<span id="stat-ry-days"></span>，次數：<span id="stat-ry-times"></span>，請假天數：<span id="stat-ry-leave"></span></p>
+        <p>畀予 - 書展天數：<span id="stat-py-days"></span>，次數：<span id="stat-py-times"></span>，請假天數：<span id="stat-py-leave"></span></p>
+        <p>雅慧 - 書展天數：<span id="stat-yh-days"></span>，次數：<span id="stat-yh-times"></span>，請假天數：<span id="stat-yh-leave"></span></p>
+        <p>凱琪 - 書展天數：<span id="stat-kq-days"></span>，次數：<span id="stat-kq-times"></span>，請假天數：<span id="stat-kq-leave"></span></p>
+    </div>
+    <div class="event-input">
+        <div>
+            <label for="event-textarea">輸入行程：</label>
+            <textarea id="event-textarea" placeholder="例如：總會活動,6/10-6/14,學生靈恩會&#10;畀予,6/25-6/26,嘉義書展,隔天請整天"></textarea>
+        </div>
+        <button onclick="addEvents()">確認</button>
+        <button onclick="clearCalendar()">刪除所有設定</button>
+    </div>
+    <div class="actions">
+        <button onclick="toggleDeleteMode()" id="delete-mode-btn">刪除模式</button>
+        <button onclick="saveCalendar()">保存</button>
+        <button onclick="exportCSV()">導出CSV</button>
+    </div>
+</div>
+
+<script>
+    let currentMonth = new Date().getMonth();
+    let currentYear = new Date().getFullYear();
+    let eventsData = [];
+    let deleteMode = false;
+
+    document.addEventListener('DOMContentLoaded', function() {
+        populateMonthSelect();
+        document.getElementById('calendar-title').innerText = `${currentYear}年${currentMonth + 1}月安排表`;
+        loadEvents();
+        generateCalendar(currentYear, currentMonth);
+        renderEvents();
+        updateStats();
+    });
+
+    function populateMonthSelect() {
+        const monthSelect = document.getElementById('month-select');
+        monthSelect.innerHTML = '';
+
+        const startMonth = currentMonth - 3 < 0 ? 12 + (currentMonth - 3) : currentMonth - 3;
+        const startYear = currentMonth - 3 < 0 ? currentYear - 1 : currentYear;
+
+        for (let i = 0; i <= 9; i++) {
+            const month = (startMonth + i) % 12;
+            const year = startYear + Math.floor((startMonth + i) / 12);
+            const option = document.createElement('option');
+            option.value = `${year}-${month}`;
+            option.innerText = `${year}年${month + 1}月`;
+            if (month === currentMonth && year === currentYear) {
+                option.selected = true;
+            }
+            monthSelect.appendChild(option);
+        }
+    }
+
+    function changeMonth() {
+        const [year, month] = document.getElementById('month-select').value.split('-').map(Number);
+        currentYear = year;
+        currentMonth = month;
+        document.getElementById('calendar-title').innerText = `${currentYear}年${currentMonth + 1}月安排表`;
+        generateCalendar(currentYear, currentMonth);
+        renderEvents();
+        updateStats();
+    }
+
+    function generateCalendar(year, month) {
+        const calendarBody = document.getElementById('calendar-body');
+        calendarBody.innerHTML = '';
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        const startDay = new Date(year, month, 1).getDay();
+
+        const weekdays = ['日', '一', '二', '三', '四', '五', '六'];
+
+        for (let day = 1; day <= daysInMonth; day++) {
+            const row = document.createElement('tr');
+            const dateCell = document.createElement('td');
+            dateCell.innerText = day;
+            const weekdayCell = document.createElement('td');
+            weekdayCell.innerText = weekdays[(startDay + day - 1) % 7];
+            if ((startDay + day - 1) % 7 === 0 || (startDay + day - 1) % 7 === 6) {
+                row.classList.add('weekend');
+            }
+            row.appendChild(dateCell);
+            row.appendChild(weekdayCell);
+
+            for (let i = 0; i < 5; i++) {
+                const cell = document.createElement('td');
+                cell.setAttribute('data-date', `${year}-${month + 1}-${day}`);
+                cell.setAttribute('data-person', i === 0 ? '總會活動' : ['榮源', '畀予', '雅慧', '凱琪'][i - 1]);
+                row.appendChild(cell);
+            }
+            calendarBody.appendChild(row);
+        }
+    }
+
+    function addEvents() {
+        const eventText = document.getElementById('event-textarea').value.trim();
+        if (!eventText) {
+            alert('請輸入行程');
+            return;
+        }
+
+        const events = eventText.split('\n').map(line => line.split(','));
+        for (let i = 0; i < events.length; i++) {
+            const event = events[i];
+            if (event.length < 3 || event.length > 4) {
+                alert(`第 ${i + 1} 行的行程格式錯誤，請重新輸入`);
+                return;
+            }
+
+            const [type, dateRange, content, note] = event;
+            const [startDateStr, endDateStr] = dateRange.split('-').map(date => date.trim());
+
+            const startDateParts = startDateStr.split('/');
+            const endDateParts = endDateStr ? endDateStr.split('/') : startDateParts;
+
+            if (startDateParts.length !== 2 || endDateParts.length !== 2) {
+                alert(`第 ${i + 1} 行的日期格式錯誤，請使用 "月/日" 格式`);
+                return;
+            }
+
+            const startDate = new Date(currentYear, parseInt(startDateParts[0], 10) - 1, parseInt(startDateParts[1], 10));
+            const endDate = new Date(currentYear, parseInt(endDateParts[0], 10) - 1, parseInt(endDateParts[1], 10));
+
+            if (!(startDate instanceof Date && !isNaN(startDate)) || !(endDate instanceof Date && !isNaN(endDate))) {
+                alert(`第 ${i + 1} 行的日期格式錯誤，請重新輸入`);
+                return;
+            }
+
+            eventsData.push({ type: type.trim(), startDate: startDate.toISOString(), endDate: endDate.toISOString(), content: content.trim(), note: note ? note.trim() : '' });
+        }
+
+        saveEvents();
+        renderEvents();
+        updateStats();
+    }
+
+    function renderEvents() {
+        const calendarBody = document.getElementById('calendar-body').rows;
+        for (let row of calendarBody) {
+            for (let cell of row.cells) {
+                if (cell.getAttribute('data-date') && cell.getAttribute('data-person')) {
+                    cell.innerHTML = '';
+                    cell.style.backgroundColor = '';
+                    cell.onclick = null; // Reset click event
+                }
+            }
+        }
+
+        eventsData.forEach(event => {
+            const startDate = new Date(event.startDate);
+            const endDate = new Date(event.endDate);
+            for (let day = startDate.getDate(); day <= endDate.getDate(); day++) {
+                for (let row of calendarBody) {
+                    if (parseInt(row.cells[0].innerText) === day && currentMonth === startDate.getMonth()) {
+                        for (let cell of row.cells) {
+                            if (cell.getAttribute('data-person') === event.type) {
+                                const cellContent = document.createElement('div');
+                                cellContent.innerText = event.content;
+                                cellContent.dataset.event = event.content;
+                                cellContent.classList.add('event');
+
+                                const noteDiv = document.createElement('div');
+                                noteDiv.classList.add('note');
+                                noteDiv.innerText = event.note ? event.note : '';
+
+                                if (event.content.includes('請假')) {
+                                    cellContent.classList.add('leave');
+                                }
+
+                                cellContent.appendChild(noteDiv);
+                                cell.appendChild(cellContent);
+                                cell.style.backgroundColor = '#faf2e4';
+
+                                cellContent.onclick = function() {
+                                    if (!deleteMode) {
+                                        noteDiv.style.display = noteDiv.style.display === 'block' ? 'none' : 'block';
+                                    }
+                                };
+
+                                if (deleteMode) {
+                                    cell.onclick = () => {
+                                        if (confirm(`是否刪除此行程：${event.content}${event.note ? ` - ${event.note}` : ''}`)) {
+                                            eventsData.splice(eventsData.indexOf(event), 1);
+                                            saveEvents();
+                                            renderEvents();
+                                            updateStats();
+                                        }
+                                    };
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    function updateStats() {
+        const stats = {
+            '榮源': { bookfairDays: 0, bookfairTimes: [], leaveDays: 0 },
+            '畀予': { bookfairDays: 0, bookfairTimes: [], leaveDays: 0 },
+            '雅慧': { bookfairDays: 0, bookfairTimes: [], leaveDays: 0 },
+            '凱琪': { bookfairDays: 0, bookfairTimes: [], leaveDays: 0 },
+        };
+
+        eventsData.forEach(event => {
+            const person = event.type;
+            const days = (new Date(event.endDate) - new Date(event.startDate)) / (1000 * 60 * 60 * 24) + 1;
+
+            if (event.content.includes('書展')) {
+                stats[person].bookfairDays += days;
+                if (!stats[person].bookfairTimes.includes(event.content)) {
+                    stats[person].bookfairTimes.push(event.content);
+                }
+            }
+
+            if (event.content.includes('請假')) {
+                stats[person].leaveDays += days;
+            }
+        });
+
+        document.getElementById('stat-ry-days').innerText = stats['榮源'].bookfairDays;
+        document.getElementById('stat-ry-times').innerText = stats['榮源'].bookfairTimes.length;
+        document.getElementById('stat-ry-leave').innerText = stats['榮源'].leaveDays;
+        document.getElementById('stat-py-days').innerText = stats['畀予'].bookfairDays;
+        document.getElementById('stat-py-times').innerText = stats['畀予'].bookfairTimes.length;
+        document.getElementById('stat-py-leave').innerText = stats['畀予'].leaveDays;
+        document.getElementById('stat-yh-days').innerText = stats['雅慧'].bookfairDays;
+        document.getElementById('stat-yh-times').innerText = stats['雅慧'].bookfairTimes.length;
+        document.getElementById('stat-yh-leave').innerText = stats['雅慧'].leaveDays;
+        document.getElementById('stat-kq-days').innerText = stats['凱琪'].bookfairDays;
+        document.getElementById('stat-kq-times').innerText = stats['凱琪'].bookfairTimes.length;
+        document.getElementById('stat-kq-leave').innerText = stats['凱琪'].leaveDays;
+    }
+
+    function saveEvents() {
+        localStorage.setItem('eventsData', JSON.stringify(eventsData));
+    }
+
+    function loadEvents() {
+        const storedEvents = localStorage.getItem('eventsData');
+        if (storedEvents) {
+            eventsData = JSON.parse(storedEvents);
+            // Convert ISO string dates back to Date objects
+            eventsData = eventsData.map(event => ({
+                ...event,
+                startDate: new Date(event.startDate),
+                endDate: new Date(event.endDate)
+            }));
+        }
+        renderEvents();
+        updateStats();
+    }
+
+    function clearCalendar() {
+        if (confirm('確定要刪除所有設定嗎？')) {
+            eventsData = [];
+            saveEvents();
+            renderEvents();
+            updateStats();
+        }
+    }
+
+    function saveCalendar() {
+        // Implementation to save calendar data
+        alert('行事曆已保存');
+    }
+
+    function exportCSV() {
+        let csvContent = "data:text/csv;charset=utf-8,";
+        const rows = document.querySelectorAll("table tr");
+        rows.forEach(row => {
+            let rowArray = Array.from(row.querySelectorAll("th, td")).map(cell => cell.innerText.replace(/,/g, ''));
+            csvContent += rowArray.join(",") + "\r\n";
+        });
+
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", "calendar.csv");
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
+    function toggleDeleteMode() {
+        deleteMode = !deleteMode;
+        const body = document.querySelector('body');
+        const deleteModeBtn = document.getElementById('delete-mode-btn');
+        if (deleteMode) {
+            body.classList.add('delete-mode');
+            deleteModeBtn.classList.add('active');
+        } else {
+            body.classList.remove('delete-mode');
+            deleteModeBtn.classList.remove('active');
+        }
+        renderEvents();
+    }
+</script>
+</body>
+</html>
